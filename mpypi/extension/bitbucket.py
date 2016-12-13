@@ -1,4 +1,4 @@
-from mpypi import cd, run, PackageBase, URLPackage, main
+from .. import PackageBase, main
 """
 A sample BitBucket Repository backed index that supports the use
 of private ssh authorized repositories.
@@ -28,6 +28,13 @@ Do a `pip install pyopenssl ndg-httpsclient pyasn1` to fix this.
 # Requires
 # - pybitbucket
 #
+
+try:
+    import pybitbucket
+except ImportError:
+    print "You must install pybitbucket to use the bitbucket module"
+    raise
+
 from pybitbucket.auth import BasicAuthenticator
 from pybitbucket.bitbucket import Client
 from pybitbucket.repository import Repository
@@ -37,7 +44,7 @@ from getpass import getpass
 
 import logging
 
-log = logging.getLogger('bitbucket')
+log = logging.getLogger(__name__)
 
 class BitBucketPackage(PackageBase):
     """
@@ -118,8 +125,8 @@ def load_packages(packages, username, email, password=None):
 
     for (pkg, owner, repo) in packages:
         bb_packages.append(BitBucketPackage(pkg, owner, repo, bitbucket))
-    
-    return bb_packages 
+
+    return bb_packages
 
 
 if __name__ == '__main__':

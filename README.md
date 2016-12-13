@@ -6,7 +6,7 @@ tags in a private bitbucket repository.
 
 # Custom Package Types
 To create a custom Packge type is very straightforward. For an example, look
-at the `bitbucket.py` file.  
+at the `mpypi/extension/bitbucket.py` file.  
 
 # Usage
 To make use of mpypi you will need to write a bootstrapping script.
@@ -48,6 +48,11 @@ To use your repository from a local virtualenv, or requirements.txt you can do o
     ```
     --extra-index-url http://localhost:7890/
     ```
+
+# Examples
+There are currently two examples you can execute:
+- `python example.py`
+- `python -m mpypi.extension.bitbucket` (requires that you install pybitbucket)
 
 # Resources
 The following resources were investigated during the development of this project
