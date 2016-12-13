@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """
-A simple private PyPi drop-in server.
+An extensible private pypi index.
 
 NOTES ON PACKAGE NAMES
 ----------------------
@@ -13,6 +13,7 @@ from __future__ import print_function
 import sys
 import os
 import cgi
+import re
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from subprocess import Popen, PIPE
@@ -20,6 +21,7 @@ from subprocess import Popen, PIPE
 from contextlib import contextmanager
 from collections import namedtuple
 
+__version__ = "0.0.2"
 
 # --- format strings
 ENTRY_FMT = """<a href="{url}">{name}</a><br/>\n"""
@@ -47,12 +49,15 @@ class URLPackage(PackageBase):
 
     NOTES
     -----
-        - When using git urls, remember to include the #egg=MyProject at the end of
-          your URLS to ensure that correct project name is used. Example
-              git+https://github.com/user/repo@1.0.0#egg=package-1.0.0
-        - alternatively just add a #egg={} and the name in the existing tuple will be used
+        - #egg= will be added to all urls that start git/svn etc a git+, if
+          it is NOT already present
     """
     EGG_FMT = "#egg={}"
+
+    p_egg = re.compile("#egg=")
+    # add #egg to urls that start on something like git+ or svn+
+    p_starts = re.compile('^\w+\+')
+
     def __init__(self, name, links):
         """
         Arguments
@@ -68,9 +73,9 @@ class URLPackage(PackageBase):
 
         # update URLS using #egg={} 
         for i in xrange(len(links)):
-            name, url = self.links[i] 
-            if self.EGG_FMT in url:
-                url = url.replace(self.EGG_FMT, self.EGG_FMT.format(name))
+            name, url = self.links[i]
+            if self.p_starts.match(url) and not self.p_egg.find(url):
+                url += self.EGG_FMT.format(name)
                 self.links[i] = (name, url)
 
 
