@@ -21,7 +21,7 @@ from subprocess import Popen, PIPE
 from contextlib import contextmanager
 from collections import namedtuple
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 # --- format strings
 ENTRY_FMT = """<a href="{url}">{name}</a><br/>\n"""
@@ -74,7 +74,7 @@ class URLPackage(PackageBase):
         # update URLS using #egg={} 
         for i in xrange(len(links)):
             name, url = self.links[i]
-            if self.p_starts.match(url) and not self.p_egg.find(url):
+            if self.p_starts.match(url) and not self.p_egg.search(url):
                 url += self.EGG_FMT.format(name)
                 self.links[i] = (name, url)
 
