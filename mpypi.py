@@ -21,7 +21,7 @@ from subprocess import Popen, PIPE
 from contextlib import contextmanager
 from collections import namedtuple
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 # --- format strings
 ENTRY_FMT = """<a href="{url}">{name}</a><br/>\n"""

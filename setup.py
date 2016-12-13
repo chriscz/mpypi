@@ -5,7 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-from . import mpypi
+import mpypi
 
 long_description = ""
 
