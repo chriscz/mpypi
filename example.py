@@ -1,4 +1,4 @@
-from mpypi import cd, run, PackageBase, URLPackage, main
+from mpypi import URLPackage, main
 """
 To execute, do the following:
     $ python example.py 
