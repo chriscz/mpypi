@@ -36,7 +36,8 @@ I will assume that your index is hosted at `http://localhost:7890`
 - You can use the `--index-url` to specify the default index url
 
 ### Global installation
-To do a global install, add the `extra-index-url` to your global section
+To do a global install, add the `extra-index-url` to the global section of
+your pip configuration file (`~/.pip/pip.conf`).
 ```
 [global]
 ; Extra index to private pypi dependencies
