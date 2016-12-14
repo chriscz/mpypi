@@ -84,6 +84,10 @@ class BitBucketPackage(PackageBase):
     @property
     def links(self):
         for tag in self.tags:
+            if isinstance(tag, dict):
+                # XXX there were no tags!
+                break
+
             tname = tag.name
             if tname[0].isdigit() or tname[0] == 'v':
                 pkg_tname = tname
