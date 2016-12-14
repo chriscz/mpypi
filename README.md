@@ -12,16 +12,17 @@ at the `mpypi/extension/bitbucket.py` file.
 To make use of mpypi you will need to write a bootstrapping script.
 This repository has several examples of bootstrapping scripts.
 Here is a short summary of the procedure:
+
 1. Install `mpypi` by doing a `pip install https://github.com/chriscz/mpypi.git`
-1. Create your bootstrapping code in a file, say `bootmpypi.py`
-1. Use the existing `URLPackage` class or write your own package classes
+2. Create your bootstrapping code in a file, say `bootmpypi.py`
+3. Use the existing `URLPackage` class or write your own package classes
    by extending `PackageBase`
-2. Create several package instances and store them in a *list*
-3. Optionally, instead of pre-creating packages, you may want to create a custom
+4. Create several package instances and store them in a *list*
+5. Optionally, instead of pre-creating packages, you may want to create a custom
    **index** instead. see **TODO** for an example of a custom index.
-4. call `mpypi.main` with your list of packages (and / or your custom index) right at the end
+6. call `mpypi.main` with your list of packages (and / or your custom index) right at the end
    of the file. Look at the signature of `mpypi.main` for additional parameters.
-5. execute `python bootmpypi.py` to host your local pypi index server.
+7. execute `python bootmpypi.py` to host your local pypi index server.
 
 # Configuring pip
 To use mpypi you will have to point `pip` to your locally hosted repository.
