@@ -10,9 +10,15 @@ with the given name in the index:
     - lowercases the package name
 """
 from __future__ import print_function
+from __future__ import unicode_literals
 import cgi
 
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from .util import PY2, PY3
+
+if PY2:
+    from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+else:
+    from http.server import BaseHTTPRequestHandler, HTTPServer
 
 # --- format strings
 ENTRY_FMT = """<a href="{url}">{name}</a><br/>\n"""
@@ -61,6 +67,9 @@ def make_request_handler(index):
                 package = index.get(package_name.lower().replace('_', '-'))
             return package
 
+        def write_unicode(self, text):
+            self.wfile.write(bytearray(text, encoding='utf-8'))
+
         def do_GET(self):
             print(self.path)
             if self.path in root_paths:
@@ -70,7 +79,7 @@ def make_request_handler(index):
 
                 # serve index page
                 for line in page_index(index.values()):
-                    self.wfile.write(line)
+                    self.write_unicode(line)
             else:
                 # follow pip standard of using lowercase names
                 package_name = self.path.strip('/')
@@ -81,7 +90,7 @@ def make_request_handler(index):
                     self.send_response(404)
                     self.send_header('Content-type','text/html')
                     self.end_headers()
-                    self.wfile.write(msg_404(package_name))
+                    self.write_unicode(msg_404(package_name))
                     return
                 # serve package page
                 self.send_response(200)
@@ -90,7 +99,7 @@ def make_request_handler(index):
 
                 # serve index page
                 for line in page_package(package):
-                    self.wfile.write(line)
+                    self.write_unicode(line)
 
     return PyPiRequestHandler 
 

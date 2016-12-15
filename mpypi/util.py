@@ -1,10 +1,21 @@
 import os
+import sys
 
 from subprocess import Popen, PIPE
 from contextlib import contextmanager
 from collections import namedtuple
 
 RunResult = namedtuple('RunResult', ['returncode', 'stdout', 'stderr'])
+
+PY2 = sys.version_info[0] == 2
+PY3 = sys.version_info[0] == 3
+
+if PY2:
+    range = xrange
+    input = raw_input
+else:
+    range = range
+    input = input
 
 @contextmanager
 def cd(directory):

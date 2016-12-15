@@ -1,4 +1,5 @@
 import re
+from .util import range
 
 class PackageBase(object):
     """
@@ -42,7 +43,7 @@ class URLPackage(PackageBase):
         self.links = list(links)
 
         # update URLS using #egg={} 
-        for i in xrange(len(links)):
+        for i in range(len(links)):
             name, url = self.links[i]
             if self.p_starts.match(url) and not self.p_egg.search(url):
                 url += self.EGG_FMT.format(name)
