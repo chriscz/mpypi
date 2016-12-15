@@ -4,6 +4,10 @@ The tool was written because I needed a private pypi index
 that dynamically generates a package index based on the
 tags in a private bitbucket repository.
 
+# Python versions
+- Python 2.7
+- Python 3.5
+
 # Custom Package Types
 To create a custom Packge type is very straightforward. For an example, look
 at the `mpypi/extension/bitbucket.py` file.  

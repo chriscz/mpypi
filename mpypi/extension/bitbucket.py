@@ -1,4 +1,7 @@
+from __future__ import unicode_literals
+from __future__ import print_function 
 from .. import PackageBase, main
+from ..util import input
 """
 A sample BitBucket Repository backed index that supports the use
 of private ssh authorized repositories.
@@ -32,7 +35,7 @@ Do a `pip install pyopenssl ndg-httpsclient pyasn1` to fix this.
 try:
     import pybitbucket
 except ImportError:
-    print "You must install pybitbucket to use the bitbucket module"
+    print("You must install pybitbucket to use the bitbucket module")
     raise
 
 from pybitbucket.auth import BasicAuthenticator
@@ -138,8 +141,8 @@ if __name__ == '__main__':
         ('pybitbucket', 'atlassian', 'python-bitbucket')
     ]
 
-    username = raw_input("bitbucket username: ")
-    email = raw_input("bitbucket email: ")
+    username = input("bitbucket username: ")
+    email = input("bitbucket email: ")
 
     bbs = load_packages(packages, username, email)
     main(bbs)
