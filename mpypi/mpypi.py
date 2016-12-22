@@ -12,6 +12,7 @@ with the given name in the index:
 from __future__ import print_function
 from __future__ import unicode_literals
 import cgi
+import re
 
 from .util import PY2, PY3
 
@@ -27,6 +28,16 @@ PKG_PAGE_FMT = """<!DOCTYPE html><html><head><title>Links for {name}</title></he
 
 
 # ------------------------------------------------------------------------------ 
+# Snippet from pip._vendor.packaging.core
+# ------------------------------------------------------------------------------ 
+_canonicalize_regex = re.compile(r"[-_.]+")
+
+def canonicalize_name(name):
+    # This is taken from PEP 503.
+    return _canonicalize_regex.sub("-", name).lower()
+# ------------------------------------------------------------------------------ 
+
+# ------------------------------------------------------------------------------ 
 # INTERNALLY USED FUNCTIONS
 # ------------------------------------------------------------------------------ 
 # --- page formatting functions
@@ -35,7 +46,7 @@ def page_index(packages):
     for p in packages:
         name = p.name
         url = name
-        yield ENTRY_FMT.format(url=p.name, name=name)
+        yield ENTRY_FMT.format(url=canonicalize_name(p.name), name=name)
 
 def page_package(package):
     yield PKG_PAGE_FMT.format(name=package.name)
@@ -63,20 +74,13 @@ def make_request_handler(index):
 
         def get_package(self, package_name):
             package = index.get(package_name)
-
-            if not package:
-                package = index.get(package_name.lower().replace('_', '-'))
-
-            if not package:
-                package = index.get(package_name.lower().replace('.', '-'))
-
             return package
 
         def write_unicode(self, text):
             self.wfile.write(bytearray(text, encoding='utf-8'))
 
         def do_GET(self):
-            print(self.path)
+            print("GET", self.path)
             if self.path in root_paths:
                 self.send_response(200)
                 self.send_header('Content-type','text/html')
@@ -88,7 +92,6 @@ def make_request_handler(index):
             else:
                 # follow pip standard of using lowercase names
                 package_name = self.path.strip('/')
-                print(package_name)
                 package = self.get_package(package_name)
 
                 if not package:
@@ -113,7 +116,7 @@ def main(packages, index=None, host='', port=7890):
     if index is None:
         index = {}
         for p in packages:
-            index[p.name.lower()] = p
+            index[canonicalize_name(p.name)] = p
     try:
         server = HTTPServer((host, port), make_request_handler(index))
         print('Started mpypi on port {}'.format(port))
