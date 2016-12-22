@@ -12,6 +12,7 @@ with the given name in the index:
 from __future__ import print_function
 from __future__ import unicode_literals
 import cgi
+import re
 
 from .util import PY2, PY3
 
@@ -25,6 +26,16 @@ ENTRY_FMT = """<a href="{url}">{name}</a><br/>\n"""
 PAGE_FMT = """<html><head><title>Simple MPyPi Index</title><meta name="api-version" value="2" /></head><body>\n"""
 PKG_PAGE_FMT = """<!DOCTYPE html><html><head><title>Links for {name}</title></head><body><h1>Links for {name}</h1>\n"""
 
+
+# ------------------------------------------------------------------------------ 
+# Snippet from pip._vendor.packaging.core
+# ------------------------------------------------------------------------------ 
+_canonicalize_regex = re.compile(r"[-_.]+")
+
+def canonicalize_name(name):
+    # This is taken from PEP 503.
+    return _canonicalize_regex.sub("-", name).lower()
+# ------------------------------------------------------------------------------ 
 
 # ------------------------------------------------------------------------------ 
 # INTERNALLY USED FUNCTIONS
@@ -63,13 +74,6 @@ def make_request_handler(index):
 
         def get_package(self, package_name):
             package = index.get(package_name)
-
-            if not package:
-                package = index.get(package_name.lower().replace('_', '-'))
-
-            if not package:
-                package = index.get(package_name.lower().replace('.', '-'))
-
             return package
 
         def write_unicode(self, text):
@@ -113,7 +117,7 @@ def main(packages, index=None, host='', port=7890):
     if index is None:
         index = {}
         for p in packages:
-            index[p.name.lower()] = p
+            index[canonicalize_name(p.name)] = p
     try:
         server = HTTPServer((host, port), make_request_handler(index))
         print('Started mpypi on port {}'.format(port))
