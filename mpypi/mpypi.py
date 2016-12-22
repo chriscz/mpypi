@@ -63,8 +63,13 @@ def make_request_handler(index):
 
         def get_package(self, package_name):
             package = index.get(package_name)
+
             if not package:
                 package = index.get(package_name.lower().replace('_', '-'))
+
+            if not package:
+                package = index.get(package_name.lower().replace('.', '-'))
+
             return package
 
         def write_unicode(self, text):
