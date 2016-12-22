@@ -46,7 +46,7 @@ def page_index(packages):
     for p in packages:
         name = p.name
         url = name
-        yield ENTRY_FMT.format(url=p.name, name=name)
+        yield ENTRY_FMT.format(url=canonicalize_name(p.name), name=name)
 
 def page_package(package):
     yield PKG_PAGE_FMT.format(name=package.name)
@@ -80,7 +80,7 @@ def make_request_handler(index):
             self.wfile.write(bytearray(text, encoding='utf-8'))
 
         def do_GET(self):
-            print(self.path)
+            print("GET", self.path)
             if self.path in root_paths:
                 self.send_response(200)
                 self.send_header('Content-type','text/html')
@@ -92,7 +92,6 @@ def make_request_handler(index):
             else:
                 # follow pip standard of using lowercase names
                 package_name = self.path.strip('/')
-                print(package_name)
                 package = self.get_package(package_name)
 
                 if not package:
