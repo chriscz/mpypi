@@ -15,9 +15,11 @@ PY3 = sys.version_info[0] == 3
 if PY2:
     range = xrange
     input = raw_input
+    string = basestring
 else:
     range = range
     input = input
+    string = str
 
 class ProcessError(RuntimeError):
     def __init__(self, command, result):
@@ -71,7 +73,7 @@ def run(*args, **kwargs):
     fail_on_error = kwargs.pop('fail_on_error', False)
 
     if len(args) == 1:
-        if isinstance(args[0], basestring):
+        if isinstance(args[0], string):
             arguments = args[0].split()
     else:
         for i in args:
