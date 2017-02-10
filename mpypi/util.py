@@ -5,7 +5,6 @@ from subprocess import Popen, PIPE
 from contextlib import contextmanager
 from collections import namedtuple
 
-from functools import partial
 
 RunResult = namedtuple('RunResult', ['returncode', 'stdout', 'stderr'])
 
@@ -63,6 +62,10 @@ def run(*args, **kwargs):
 
     fail_on_error: bool, optional
         raise an exception if the returncode is non-zero. (default: False)            
+
+    encoding: str, optional
+        the encoding type that should be used to decode stdout/stderr. When None is given,
+        bytes are returned instead of unicode.
     """
     _patch_popen(Popen)
     assert len(args) > 0
@@ -71,6 +74,7 @@ def run(*args, **kwargs):
 
     input = kwargs.pop('input', None)
     fail_on_error = kwargs.pop('fail_on_error', False)
+    encoding = kwargs.pop('encoding', None) 
 
     if len(args) == 1:
         if isinstance(args[0], string):
@@ -93,6 +97,10 @@ def run(*args, **kwargs):
 
     proc = Popen(arguments, **kwargs)
     stdout, stderr = proc.communicate(input)
+    
+    if encoding is not None:
+        stdout = stdout.decode(encoding=encoding)
+        stderr = stderr.decode(encoding=encoding)
 
     result = RunResult(proc.returncode, stdout, stderr)
     
@@ -100,9 +108,6 @@ def run(*args, **kwargs):
         raise ProcessError(' '.join(arguments), result)
 
     return result
-
-"""Like run, but with fail_on_error=True"""
-runf = partial(run, fail_on_error=True)
 
 def _patch_popen(Popen):
     """

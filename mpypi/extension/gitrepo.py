@@ -1,11 +1,18 @@
-from ..util import cd, run, runf
+from __future__ import unicode_literals
+
+from ..util import cd, run
 from ..package import PackageBase
 
 import os
 import logging
 import re
 
+from functools import partial
+
 log = logging.getLogger(__name__)
+
+# set our default configuration
+run = partial(run, fail_on_error=True, encoding='utf-8')
 
 class GitRepoPackage(PackageBase):
     """
@@ -21,13 +28,13 @@ class GitRepoPackage(PackageBase):
         self.strip_v = strip_v
 
         with cd(self.location):
-            root = run('git rev-parse --show-toplevel', fail_on_error=True).stdout.strip()
+            root = run('git rev-parse --show-toplevel').stdout.strip()
             self.gitroot = os.path.abspath(root)
 
     @property
     def tags(self):
         with cd(self.location):
-            raw_tags = runf('git tag').stdout.split('\n')
+            raw_tags = run('git tag').stdout.split('\n')
 
         tags = []
         for t in raw_tags:
@@ -39,7 +46,7 @@ class GitRepoPackage(PackageBase):
     @property
     def branches(self):
         with cd(self.location):
-            raw_branches = runf('git branch').stdout.split('\n')
+            raw_branches = run('git branch').stdout.split('\n')
 
         branches = []
         for b in raw_branches:
