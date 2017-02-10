@@ -48,3 +48,5 @@ class URLPackage(PackageBase):
             if self.p_starts.match(url) and not self.p_egg.search(url):
                 url += self.EGG_FMT.format(name)
                 self.links[i] = (name, url)
+                url += self.EGG_FMT.format(name)
+                self.links[i] = (name, url)
