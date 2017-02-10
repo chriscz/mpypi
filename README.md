@@ -59,7 +59,7 @@ To use your repository from a local virtualenv, or requirements.txt you can do o
 There are currently two examples you can execute:
 - `python example.py`
 - `python -m mpypi.extension.bitbucket` (requires that you install pybitbucket)
-- [Base project for mpypi implementations](https://github.com/chriscz/mpypi-bitbucket)
+- [Base project for mpypi implementations](https://github.com/chriscz/mpypi-scaffold)
 
 # Resources
 The following resources were investigated during the development of this project
